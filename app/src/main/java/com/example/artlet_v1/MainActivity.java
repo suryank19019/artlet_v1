@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         entry = false;
         if(permissionGrantCheck())
         {
-            Toast.makeText(MainActivity.this, "Permission is already granted!", Toast.LENGTH_SHORT).show();
+    //        Toast.makeText(MainActivity.this, "Permission is already granted!", Toast.LENGTH_SHORT).show();
             entry = true;
         }
 

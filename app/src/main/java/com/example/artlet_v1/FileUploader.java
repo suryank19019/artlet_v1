@@ -1,6 +1,6 @@
 package com.example.artlet_v1;
 
-import android.content.Context;
+    import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -33,7 +33,7 @@ public class FileUploader extends AppCompatActivity {
 
     private void browseFiles() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("application/pdf + application/zip + application/epub");
+        intent.setType("application/pdf + application/zip + application/epub + application/plain");
 //        intent.setType("images/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(intent, 1);
@@ -92,6 +92,14 @@ public class FileUploader extends AppCompatActivity {
             {
                 Intent intent = new Intent(this, PdfReader.class);
                 intent.putExtra("pdfPath", docFilePath);
+                startActivity(intent);
+            }
+            else if(type.equals(".txt"))
+            {
+                Intent intent = new Intent(this, DocActivity.class);
+                intent.putExtra("docPath", docFilePath);
+                intent.putExtra("editable", false);
+//                intent.putExtra("editable", true);
                 startActivity(intent);
             }
             else

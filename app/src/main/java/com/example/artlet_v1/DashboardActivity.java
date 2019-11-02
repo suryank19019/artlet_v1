@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.artlet_v1.UserProfile.UserProfileActivity;
 import com.folioreader.FolioReader;
 import com.google.android.material.navigation.NavigationView;
 import com.ramotion.foldingcell.FoldingCell;
@@ -110,6 +112,8 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 //        s.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_LEFT), 0, s.length(), 0);
 //
 //        item.setTitle(s);
+		NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);														
 
         this.drawer=findViewById(R.id.dashboardactivity);
 
@@ -155,9 +159,17 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        Log.d("In DashboardActivity", "Above::Going to profiles");
         switch (menuItem.getItemId()){
             case R.id.nav_leaderboard:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new LeaderBoardFragmentt()).commit();
+                //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new LeaderBoardActivity()).commit();
+
+                /*Log.d("In DashboardActivity", "Going to profiles");
+                String userId = getIntent().getStringExtra("key_userid");
+                Intent goToUserProfileIntent = new Intent(this, UserProfileActivity.class);
+                goToUserProfileIntent.putExtra("key_userId", userId);
+                startActivity(goToUserProfileIntent);
+                */
                 break;
 
             case R.id.nav_feedback:
@@ -165,7 +177,14 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 break;
 
             case R.id.nav_profile:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new ProfileFragmentt()).commit();
+                //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new ProfileFragmentt()).commit();
+
+                Log.d("In DashboardActivity", "Going to profiles");
+                String userId = getIntent().getStringExtra("key_userid");
+                Intent goToUserProfileIntent = new Intent(this, UserProfileActivity.class);
+                goToUserProfileIntent.putExtra("key_userId", userId);
+                goToUserProfileIntent.putExtra("view_userid", userId);
+                startActivity(goToUserProfileIntent);
                 break;
 
             case R.id.nav_polls:
@@ -185,7 +204,6 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
     @Override
     public void onBackPressed() {
         if(drawer.isDrawerOpen(GravityCompat.START)){

@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void checkLoginDetails(String email, String password){
         databaseObj = databaseHelper.getReadableDatabase();
-        String query = "SELECT "+TableUser.TableUserClass.USER_EMAIL+", "+TableUser.TableUserClass.USER_NAME
+        String query = "SELECT "+TableUser.TableUserClass.USER_EMAIL+", "+TableUser.TableUserClass.USER_NAME +", "+ TableUser.TableUserClass.USER_ID
                         +" FROM "+ TableUser.TableUserClass.TABLE_Users
                         +" WHERE email='"+email +"' AND password='"+password+"'";
 
@@ -75,12 +75,16 @@ public class LoginActivity extends AppCompatActivity {
         if (cursor!= null && cursor.moveToFirst() && cursor.getCount()>0) {
             String loginEmail = cursor.getString(0);
             String loginName = cursor.getString(1);
+            String loginUserId = cursor.getString(2);
 
             showMessage(properties.getProperty("LOGIN_SUCCESS"));
 
             Intent goToDashboardIntent = new Intent(this, DashboardActivity.class);
+
+            goToDashboardIntent.putExtra("key_userid", loginUserId);
             goToDashboardIntent.putExtra("key_email",loginEmail);
             goToDashboardIntent.putExtra("key_username", loginName);
+
             startActivity(goToDashboardIntent);
         }
         else{

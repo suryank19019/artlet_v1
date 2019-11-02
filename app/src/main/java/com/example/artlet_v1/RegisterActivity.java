@@ -86,8 +86,13 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                     else{
                         // Insert into database
-                        db.InsertUserData(db, name, email, password, "Delhi");
-                        Log.d("RegisterActivit", "Successfully inserted");
+                        long userId = db.InsertUserData(db, name, email, password, "Delhi");
+                        db.InsertUserProfileData(db, userId, name, 0, 0,0,"");
+                        db.InsertContentData1(db, userId, "Manga1", "data/imageDir/manga.xml");
+                        db.InsertContentData1(db, userId, "Epub1","data/imageDir/epub.xml");
+                        db.InsertContentData1(db, userId, "Text", "data/imageDir/text.xml");
+                        db.InsertContentData1(db, userId, "Doc", "data/imageDir/doc.xml");
+                        Log.d("RegisterActivity", "Successfully inserted");
                         showMessage(properties.getProperty("REGISTRATION_SUCCESS"));
 
                         Intent i=new Intent(view.getContext(), LoginActivity.class);
@@ -96,6 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     public void showMessage(String message){

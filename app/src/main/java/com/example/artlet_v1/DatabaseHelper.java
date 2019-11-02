@@ -11,6 +11,7 @@ import com.example.artlet_v1.TableGenre.TableGenreClass;
 import com.example.artlet_v1.TableTag.TableTagClass;
 import com.example.artlet_v1.TableUser.TableUserClass;
 import com.example.artlet_v1.TableUserGenre.TableUserGenreClass;
+import com.example.artlet_v1.TableUserProfile.TableUserProfileClass;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     // Logcat tag
@@ -41,6 +42,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //user_genre table create statement
     private static final String CREATE_TABLE_User_Genre = "CREATE TABLE " + TableUserGenreClass.TABLE_User_Genre + " ( " + TableUserGenreClass.USERGENRE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT , " + TableUserGenreClass.UG_GENREID + " INT(11), " + TableUserGenreClass.UG_USERID + " INT(11), " + TableUserGenreClass.UG_CREATED_AT + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (" + TableUserGenreClass.UG_USERID + ") REFERENCES "+ TableUserClass.TABLE_Users + " (" + TableUserClass.USER_ID + "), FOREIGN KEY (" + TableUserGenreClass.UG_GENREID + ") REFERENCES " + TableGenreClass.TABLE_Genre + " (" + TableGenreClass.GENRE_ID + ") )";
 
+    // create user profile table
+    private static final String CREATE_TABLE_User_Profile = "CREATE TABLE " + TableUserProfileClass.TABLE_User_Profile + " ( " + TableUserProfileClass.USER_ID + " INTEGER PRIMARY KEY , " + TableUserProfileClass.USER_NAME + " VARCHAR(255), " + TableUserProfileClass.USER_IMAGE + " VARCHAR(255) , " + TableUserProfileClass.USER_FOLLOWERS + " INT(11) , " + TableUserProfileClass.USER_FOLLOWING + " INT(11) , " + TableUserProfileClass.USER_POSTS + " INT(11) )";
+
     // SQLiteDatabase object to write and read the database created
     protected SQLiteDatabase db;
 
@@ -58,6 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_Tag);
         db.execSQL(CREATE_TABLE_Content);
         db.execSQL(CREATE_TABLE_User_Genre);
+        db.execSQL(CREATE_TABLE_User_Profile);
         Log.d("Tables Created", "Inside OnCreate");
     }
 
@@ -66,7 +71,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.setForeignKeyConstraintsEnabled(true);
     }
 
-    public void InsertUserData(DatabaseHelper dh,  String user_name, String user_email, String user_password, String user_location)
+    public long InsertUserData(DatabaseHelper dh,  String user_name, String user_email, String user_password, String user_location)
     {
         db = getWritableDatabase();
         ContentValues c = new ContentValues();
@@ -74,11 +79,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         c.put(TableUserClass.USER_NAME, user_name);
         c.put(TableUserClass.USER_PASSWORD, user_password);
         c.put(TableUserClass.USER_LOCATION, user_location);
-        db.insert(TableUserClass.TABLE_Users, null, c);
-        Log.d("Inside InsertUSerData", "One row inserted");
+        long id = db.insert(TableUserClass.TABLE_Users, null, c);
+        Log.d("Inside InsertUserData", "One row inserted");
+        return id;
     }
 
-    public void InsertContentData(DatabaseHelper dh, String title, String authorId, String genreId,
+    public void InsertUserProfileData(DatabaseHelper dh, long user_id, String user_name, int user_followers, int user_following, int user_posts, String user_image)
+    {
+        db = getWritableDatabase();
+        ContentValues c = new ContentValues();
+        c.put(TableUserProfileClass.USER_ID, user_id);
+        c.put(TableUserProfileClass.USER_NAME, user_name);
+        c.put(TableUserProfileClass.USER_FOLLOWERS, user_followers);
+        c.put(TableUserProfileClass.USER_FOLLOWING, user_following);
+        c.put(TableUserProfileClass.USER_POSTS, user_posts);
+        c.put(TableUserProfileClass.USER_IMAGE, user_image);
+        db.insert(TableUserProfileClass.TABLE_User_Profile, null, c);
+        Log.d("InsertUserProfileData", "One row inserted");
+    }
+
+	public void InsertContentData(DatabaseHelper dh, String title, String authorId, String genreId,
                                   String type, String filePath, String timeStamp) {
         db = getWritableDatabase();
         ContentValues c = new ContentValues();
@@ -90,7 +110,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //                    + TableContentClass.CONTENT_TYPE + " VARCHAR(255), "
 //                    + TableContentClass.CONTENT_FILE + " VARCHAR(255), "
 //                    + TableContentClass.CONTENT_CREATED_AT + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP )\n";
+	 
 
+																									 
+	 
+								   
+											  
+														   
         c.put(TableContentClass.CONTENT_TITLE, title);
         c.put(TableContentClass.CONTENT_AUTHORID, authorId);
         c.put(TableContentClass.CONTENT_GENREID, genreId);
@@ -99,6 +125,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         c.put(TableContentClass.CONTENT_CREATED_AT, timeStamp);
         db.insert(TableContentClass.TABLE_Content, null, c);
         Log.d("InsertContentData", "Inserting file data");
+    }
+    public void InsertContentData1(DatabaseHelper dh, long user_id, String title, String content_path)
+    {
+        db = getWritableDatabase();
+        ContentValues c = new ContentValues();
+        c.put(TableContentClass.CONTENT_AUTHORID, user_id);
+        c.put(TableContentClass.CONTENT_TITLE, title);
+        c.put(TableContentClass.CONTENT_FILE, content_path);
+        db.insert(TableContentClass.TABLE_Content, null, c);
+        Log.d("InsertContentData", "One row inserted");
     }
 
     //will be removed later; may be used
@@ -119,6 +155,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TableGenreClass.TABLE_Genre);
         db.execSQL("DROP TABLE IF EXISTS " + TableContentClass.TABLE_Content);
         db.execSQL("DROP TABLE IF EXISTS " + TableUserGenreClass.TABLE_User_Genre);
+        db.execSQL("DROP TABLE IF EXISTS " + TableUserProfileClass.TABLE_User_Profile);
 
         // create new tables
         onCreate(db);

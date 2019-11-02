@@ -29,5 +29,6 @@ public class EpubReader extends AppCompatActivity {
         Log.d("bruno", path);
         FolioReader folioReader = FolioReader.get();
         folioReader.openBook(path);
+        finish();
     }
 }
